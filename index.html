@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hand2World: Autoregressive Egocentric Interaction Generation via Free-Space Hand Gestures - CVPR 2026">
+    <meta name="keywords" content="egocentric video generation, hand gesture control, interaction synthesis, computer vision, CVPR">
+    <title>Hand2World | Egocentric Interaction Generation from Free-Space Gestures</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#title" class="nav-title">Hand2World</a>
+            <div class="nav-links">
+                <a href="#abstract">Abstract</a>
+                <a href="#method">Method</a>
+                <a href="#comparisons">Comparisons</a>
+                <a href="#citation">BibTeX</a>
+                <a href="#hero" class="demo-link">Demo</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Title Section -->
+    <section id="title">
+        <h1>Hand2World: Autoregressive Egocentric Interaction Generation via Free-Space Hand Gestures</h1>
+
+        <div class="links">
+            <a href="https://arxiv.org/pdf/2602.09600" class="btn btn-primary" target="_blank">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                Paper
+            </a>
+            <a href="#" class="btn btn-secondary">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+                Code (Coming Soon)
+            </a>
+        </div>
+    </section>
+
+    <!-- Hero Section: Long-Horizon Generation -->
+    <section id="hero" class="bg-alt">
+        <div class="container">
+            <h2>Interactive Demo</h2>
+
+            <!-- Example 1: Multi-object manipulation -->
+            <h4 class="slide-title" style="margin-top: 1rem;">Multi-Object Manipulation</h4>
+
+            <div class="comparison-grid compact" id="hero-example-1" data-sync-group="hero-1">
+                <div class="method-group">
+                    <div class="method-col">
+                        <div class="method-label">Scene Image</div>
+                        <img src="images/scenes/hero_01_scene.png"
+                             alt="Scene Image"
+                             class="scene-image">
+                    </div>
+
+                    <div class="method-col">
+                        <div class="method-label">Input Gesture</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hero/hero_01_input.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                        <div class="method-label">Hand Control</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hero/hero_01_control_no_bg.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+
+                    <div class="method-col method-ours">
+                        <div class="method-label">Generated Output (Hand2World-AR)</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hero/hero_01_output.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Play Button for Example 1 -->
+            <div class="sync-play-container" data-sync-control="hero-1" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="hero-1">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span class="play-text">Play</span>
+                </button>
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;">
+                    <div class="sync-progress-bar">
+                        <div class="sync-progress-fill">
+                            <div class="sync-progress-handle"></div>
+                        </div>
+                    </div>
+                    <div class="sync-time-display">0:00 / 0:00</div>
+                </div>
+            </div>
+
+            <!-- Example 2: State-changing interaction -->
+            <h4 class="slide-title" style="margin-top: 2rem;">State-Changing Interaction</h4>
+
+            <div class="comparison-grid compact" id="hero-example-2" data-sync-group="hero-2">
+                <div class="method-group">
+                    <div class="method-col">
+                        <div class="method-label">Scene Image</div>
+                        <img src="images/scenes/hero_02_scene.png"
+                             alt="Scene Image"
+                             class="scene-image">
+                    </div>
+
+                    <div class="method-col">
+                        <div class="method-label">Input Gesture</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hero/hero_02_input.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                        <div class="method-label">Hand Control</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hero/hero_02_control_no_bg.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+
+                    <div class="method-col method-ours">
+                        <div class="method-label">Generated Output (Hand2World-AR)</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hero/hero_02_output.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Play Button for Example 2 -->
+            <div class="sync-play-container" data-sync-control="hero-2" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="hero-2">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span class="play-text">Play</span>
+                </button>
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;">
+                    <div class="sync-progress-bar">
+                        <div class="sync-progress-fill">
+                            <div class="sync-progress-handle"></div>
+                        </div>
+                    </div>
+                    <div class="sync-time-display">0:00 / 0:00</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract -->
+    <section id="abstract">
+        <div class="container">
+            <h2>Abstract</h2>
+            <p class="abstract-text">
+                Egocentric interactive world models are essential for augmented reality and embodied AI, where visual generation must respond to user input with low latency, geometric consistency, and long-term stability. We study egocentric interaction generation from a single scene image under free-space hand gestures, aiming to synthesize photorealistic videos in which hands enter the scene, interact with objects, and induce plausible world dynamics under head motion. This setting introduces fundamental challenges, including distribution shift between free-space gestures and contact-heavy training data, ambiguity between hand motion and camera motion in monocular views, and the need for arbitrary-length video generation. We present Hand2World, a unified autoregressive framework that addresses these challenges through occlusion-invariant hand conditioning based on projected 3D hand meshes, allowing visibility and occlusion to be inferred from scene context rather than encoded in the control signal. To stabilize egocentric viewpoint changes, we inject explicit camera geometry via per-pixel Plücker-ray embeddings, disentangling camera motion from hand motion and preventing background drift. We further develop a fully automated monocular annotation pipeline and distill a bidirectional diffusion model into a causal generator, enabling arbitrary-length synthesis. Experiments on three egocentric interaction benchmarks show substantial improvements in perceptual quality and 3D consistency while supporting camera control and long-horizon interactive generation.
+            </p>
+        </div>
+    </section>
+
+    <!-- Method Overview -->
+    <section id="method" class="bg-alt">
+        <div class="container">
+            <h2>Method</h2>
+
+            <div class="method-diagram">
+                <img src="images/method_pipeline_hires.png" alt="Hand2World Pipeline" class="diagram-img">
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Visual Comparisons -->
+    <section id="comparisons" class="bg-alt">
+        <div class="container">
+            <h2 style="margin-bottom: 1rem;">Visual Comparisons</h2>
+
+            <!-- Dataset Reconstruction -->
+            <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Dataset Reconstruction</h3>
+            <p class="section-desc" style="margin-bottom: 0.5rem;">Select a method to compare with the ground truth. Drag the slider on comparison to reveal differences.</p>
+
+            <!-- ARCTIC Example 3: Laptop Open -->
+            <h4 class="slide-title" style="margin-top: 1rem;">Opening Laptop</h4>
+
+            <div class="method-selector-single" data-example="arctic-3">
+                <button class="method-btn-single" data-example="arctic-3" data-method="interdyn" data-label="InterDyn">InterDyn</button>
+                <button class="method-btn-single" data-example="arctic-3" data-method="mask2iv" data-label="Mask2IV">Mask2IV</button>
+                <button class="method-btn-single" data-example="arctic-3" data-method="coshand" data-label="CosHand">CosHand</button>
+                <button class="method-btn-single" data-example="arctic-3" data-method="playerone" data-label="PlayerOne">PlayerOne</button>
+                <button class="method-btn-single" data-example="arctic-3" data-method="wan-control" data-label="Wan2.1-Control">Wan2.1-Control</button>
+                <button class="method-btn-single active" data-example="arctic-3" data-method="ours" data-label="Hand2World">Hand2World</button>
+            </div>
+
+            <div class="comparison-grid-dataset" id="arctic-3-grid" data-sync-group="arctic-3">
+                <div class="method-col">
+                    <div class="method-label">Scene Image</div>
+                    <img src="images/scenes/arctic_03_scene.jpg"
+                         alt="Scene Image"
+                         class="scene-image">
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                    <div class="method-label method-video-label">Hand2World</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video method-video" data-src="videos/arctic/arctic_03_ours.mp4">
+                        <source type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="method-col">
+                    <div class="method-label">Ground Truth</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/arctic_03_gt.mp4">
+                        <source type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="method-col">
+                    <div class="method-label">Comparison</div>
+                    <div class="inline-video-compare-single" data-example="arctic-3"
+                         data-videos='{"ours":"videos/arctic/arctic_03_ours.mp4","interdyn":"videos/arctic/arctic_03_interdyn.mp4","mask2iv":"videos/arctic/arctic_03_mask2iv.mp4","coshand":"videos/arctic/arctic_03_coshand.mp4","wan-control":"videos/arctic/arctic_03_wan_control.mp4","playerone":"videos/arctic/arctic_03_playerone.mp4"}'
+                         data-labels='{"ours":"Hand2World","interdyn":"InterDyn","mask2iv":"Mask2IV","coshand":"CosHand","wan-control":"Wan2.1-Control","playerone":"PlayerOne"}'>
+                        <div class="compare-left">
+                            <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/arctic_03_ours.mp4">
+                                <source type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="compare-right">
+                            <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/arctic_03_gt.mp4">
+                                <source type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="compare-slider">
+                            <div class="compare-handle"></div>
+                        </div>
+                        <div class="compare-hover-labels">
+                            <span class="hover-label hover-label-left">Hand2World</span>
+                            <span class="hover-label hover-label-right">Ground Truth</span>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sync-play-container" data-sync-control="arctic-3" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="arctic-3">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span class="play-text">Play</span>
+                </button>
+
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;">
+                    <div class="sync-progress-bar">
+                        <div class="sync-progress-fill">
+                            <div class="sync-progress-handle"></div>
+                        </div>
+                    </div>
+                    <div class="sync-time-display">0:00 / 0:00</div>
+                </div>
+            </div>
+
+            <!-- ARCTIC Example 4: Phone Use -->
+            <h4 class="slide-title" style="margin-top: 1.25rem;">Closing Phone</h4>
+
+            <div class="method-selector-single" data-example="arctic-4">
+                <button class="method-btn-single" data-example="arctic-4" data-method="interdyn" data-label="InterDyn">InterDyn</button>
+                <button class="method-btn-single" data-example="arctic-4" data-method="mask2iv" data-label="Mask2IV">Mask2IV</button>
+                <button class="method-btn-single" data-example="arctic-4" data-method="coshand" data-label="CosHand">CosHand</button>
+                <button class="method-btn-single" data-example="arctic-4" data-method="playerone" data-label="PlayerOne">PlayerOne</button>
+                <button class="method-btn-single" data-example="arctic-4" data-method="wan-control" data-label="Wan2.1-Control">Wan2.1-Control</button>
+                <button class="method-btn-single active" data-example="arctic-4" data-method="ours" data-label="Hand2World">Hand2World</button>
+            </div>
+
+            <div class="comparison-grid-dataset" id="arctic-4-grid" data-sync-group="arctic-4">
+                <div class="method-col">
+                    <div class="method-label">Scene Image</div>
+                    <img src="images/scenes/arctic_04_scene.jpg"
+                         alt="Scene Image"
+                         class="scene-image">
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                    <div class="method-label method-video-label">Hand2World</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video method-video" data-src="videos/arctic/arctic_04_ours.mp4">
+                        <source type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="method-col">
+                    <div class="method-label">Ground Truth</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/arctic_04_gt.mp4">
+                        <source type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="method-col">
+                    <div class="method-label">Comparison</div>
+                    <div class="inline-video-compare-single" data-example="arctic-4"
+                         data-videos='{"ours":"videos/arctic/arctic_04_ours.mp4","interdyn":"videos/arctic/arctic_04_interdyn.mp4","mask2iv":"videos/arctic/arctic_04_mask2iv.mp4","coshand":"videos/arctic/arctic_04_coshand.mp4","wan-control":"videos/arctic/arctic_04_wan_control.mp4","playerone":"videos/arctic/arctic_04_playerone.mp4"}'
+                         data-labels='{"ours":"Hand2World","interdyn":"InterDyn","mask2iv":"Mask2IV","coshand":"CosHand","wan-control":"Wan2.1-Control","playerone":"PlayerOne"}'>
+                        <div class="compare-left">
+                            <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/arctic_04_ours.mp4">
+                                <source type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="compare-right">
+                            <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/arctic_04_gt.mp4">
+                                <source type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="compare-slider">
+                            <div class="compare-handle"></div>
+                        </div>
+                        <div class="compare-hover-labels">
+                            <span class="hover-label hover-label-left">Hand2World</span>
+                            <span class="hover-label hover-label-right">Ground Truth</span>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sync-play-container" data-sync-control="arctic-4" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="arctic-4">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span class="play-text">Play</span>
+                </button>
+
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;">
+                    <div class="sync-progress-bar">
+                        <div class="sync-progress-fill">
+                            <div class="sync-progress-handle"></div>
+                        </div>
+                    </div>
+                    <div class="sync-time-display">0:00 / 0:00</div>
+                </div>
+            </div>
+
+            <!-- ARCTIC Example 1: Waffle Iron -->
+            <h4 class="slide-title" style="margin-top: 1.25rem;">Waffle Iron Use</h4>
+
+            <div class="method-selector-single" data-example="arctic-1">
+                <button class="method-btn-single" data-example="arctic-1" data-method="interdyn" data-label="InterDyn">InterDyn</button>
+                <button class="method-btn-single" data-example="arctic-1" data-method="mask2iv" data-label="Mask2IV">Mask2IV</button>
+                <button class="method-btn-single" data-example="arctic-1" data-method="coshand" data-label="CosHand">CosHand</button>
+                <button class="method-btn-single" data-example="arctic-1" data-method="playerone" data-label="PlayerOne">PlayerOne</button>
+                <button class="method-btn-single" data-example="arctic-1" data-method="wan-control" data-label="Wan2.1-Control">Wan2.1-Control</button>
+                <button class="method-btn-single active" data-example="arctic-1" data-method="ours" data-label="Hand2World">Hand2World</button>
+            </div>
+
+            <div class="comparison-grid-dataset" id="arctic-1-grid" data-sync-group="arctic-1">
+                <div class="method-col">
+                    <div class="method-label">Scene Image</div>
+                    <img src="images/scenes/s05_waffleiron_use_02_0_seg_003_scene.jpg"
+                         alt="Scene Image"
+                         class="scene-image">
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                    <div class="method-label method-video-label">Hand2World</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video method-video" data-src="videos/arctic/s05_waffleiron_use_02_0_seg_003_ours.mp4">
+                        <source type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="method-col">
+                    <div class="method-label">Ground Truth</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/s05_waffleiron_use_02_0_seg_003_gt.mp4">
+                        <source type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="method-col">
+                    <div class="method-label">Comparison</div>
+                    <div class="inline-video-compare-single" data-example="arctic-1"
+                         data-videos='{"ours":"videos/arctic/s05_waffleiron_use_02_0_seg_003_ours.mp4","interdyn":"videos/arctic/s05_waffleiron_use_02_0_seg_003_interdyn.mp4","mask2iv":"videos/arctic/s05_waffleiron_use_02_0_seg_003_mask2iv.mp4","coshand":"videos/arctic/s05_waffleiron_use_02_0_seg_003_coshand.mp4","wan-control":"videos/arctic/s05_waffleiron_use_02_0_seg_003_wan_control.mp4","playerone":"videos/arctic/s05_waffleiron_use_02_0_seg_003_playerone.mp4"}'
+                         data-labels='{"ours":"Hand2World","interdyn":"InterDyn","mask2iv":"Mask2IV","coshand":"CosHand","wan-control":"Wan2.1-Control","playerone":"PlayerOne"}'>
+                        <div class="compare-left">
+                            <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/s05_waffleiron_use_02_0_seg_003_ours.mp4">
+                                <source type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="compare-right">
+                            <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/s05_waffleiron_use_02_0_seg_003_gt.mp4">
+                                <source type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="compare-slider">
+                            <div class="compare-handle"></div>
+                        </div>
+                        <div class="compare-hover-labels">
+                            <span class="hover-label hover-label-left">Hand2World</span>
+                            <span class="hover-label hover-label-right">Ground Truth</span>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Play Button for ARCTIC Example 1 -->
+            <div class="sync-play-container" data-sync-control="arctic-1" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="arctic-1">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span class="play-text">Play</span>
+                </button>
+
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;">
+                    <div class="sync-progress-bar">
+                        <div class="sync-progress-fill">
+                            <div class="sync-progress-handle"></div>
+                        </div>
+                    </div>
+                    <div class="sync-time-display">0:00 / 0:00</div>
+                </div>
+            </div>
+
+            <!-- ARCTIC Example 2: Espresso Machine -->
+            <h4 class="slide-title" style="margin-top: 1.25rem;">Espresso Machine Use</h4>
+
+            <div class="method-selector-single" data-example="arctic-2">
+                <button class="method-btn-single" data-example="arctic-2" data-method="interdyn" data-label="InterDyn">InterDyn</button>
+                <button class="method-btn-single" data-example="arctic-2" data-method="mask2iv" data-label="Mask2IV">Mask2IV</button>
+                <button class="method-btn-single" data-example="arctic-2" data-method="coshand" data-label="CosHand">CosHand</button>
+                <button class="method-btn-single" data-example="arctic-2" data-method="playerone" data-label="PlayerOne">PlayerOne</button>
+                <button class="method-btn-single" data-example="arctic-2" data-method="wan-control" data-label="Wan2.1-Control">Wan2.1-Control</button>
+                <button class="method-btn-single active" data-example="arctic-2" data-method="ours" data-label="Hand2World">Hand2World</button>
+            </div>
+
+            <div class="comparison-grid-dataset" id="arctic-2-grid" data-sync-group="arctic-2">
+                <div class="method-col">
+                    <div class="method-label">Scene Image</div>
+                    <img src="images/scenes/s05_espressomachine_use_01_0_seg_000_scene.jpg"
+                         alt="Scene Image"
+                         class="scene-image">
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                    <div class="method-label method-video-label">Hand2World</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video method-video" data-src="videos/arctic/s05_espressomachine_use_01_0_seg_000_ours.mp4">
+                        <source type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="method-col">
+                    <div class="method-label">Ground Truth</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/s05_espressomachine_use_01_0_seg_000_gt.mp4">
+                        <source type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="method-col">
+                    <div class="method-label">Comparison</div>
+                    <div class="inline-video-compare-single" data-example="arctic-2"
+                         data-videos='{"ours":"videos/arctic/s05_espressomachine_use_01_0_seg_000_ours.mp4","interdyn":"videos/arctic/s05_espressomachine_use_01_0_seg_000_interdyn.mp4","mask2iv":"videos/arctic/s05_espressomachine_use_01_0_seg_000_mask2iv.mp4","coshand":"videos/arctic/s05_espressomachine_use_01_0_seg_000_coshand.mp4","wan-control":"videos/arctic/s05_espressomachine_use_01_0_seg_000_wan_control.mp4","playerone":"videos/arctic/s05_espressomachine_use_01_0_seg_000_playerone.mp4"}'
+                         data-labels='{"ours":"Hand2World","interdyn":"InterDyn","mask2iv":"Mask2IV","coshand":"CosHand","wan-control":"Wan2.1-Control","playerone":"PlayerOne"}'>
+                        <div class="compare-left">
+                            <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/s05_espressomachine_use_01_0_seg_000_ours.mp4">
+                                <source type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="compare-right">
+                            <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/arctic/s05_espressomachine_use_01_0_seg_000_gt.mp4">
+                                <source type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="compare-slider">
+                            <div class="compare-handle"></div>
+                        </div>
+                        <div class="compare-hover-labels">
+                            <span class="hover-label hover-label-left">Hand2World</span>
+                            <span class="hover-label hover-label-right">Ground Truth</span>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sync-play-container" data-sync-control="arctic-2" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="arctic-2">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span class="play-text">Play</span>
+                </button>
+
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;">
+                    <div class="sync-progress-bar">
+                        <div class="sync-progress-fill">
+                            <div class="sync-progress-handle"></div>
+                        </div>
+                    </div>
+                    <div class="sync-time-display">0:00 / 0:00</div>
+                </div>
+            </div>
+
+
+            <!-- HOT3D Example 1 -->
+            <h4 class="slide-title" style="margin-top: 1.25rem;">Keyboard Typing with Left-Right Head Turn</h4>
+
+            <div class="method-selector-single" data-example="hot3d-1">
+                <button class="method-btn-single" data-example="hot3d-1" data-method="interdyn" data-label="InterDyn">InterDyn</button>
+                <button class="method-btn-single" data-example="hot3d-1" data-method="mask2iv" data-label="Mask2IV">Mask2IV</button>
+                <button class="method-btn-single" data-example="hot3d-1" data-method="coshand" data-label="CosHand">CosHand</button>
+                <button class="method-btn-single" data-example="hot3d-1" data-method="wan-control" data-label="Wan2.1-Control">Wan2.1-Control</button>
+                <button class="method-btn-single active" data-example="hot3d-1" data-method="ours" data-label="Hand2World">Hand2World</button>
+            </div>
+
+            <div class="comparison-grid-dataset" id="hot3d-1-grid" data-sync-group="hot3d-1">
+                <div class="method-col">
+                    <div class="method-label">Scene Image</div>
+                    <img src="images/scenes/hot3d_01_scene.jpg" alt="Scene Image" class="scene-image">
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                    <div class="method-label method-video-label">Hand2World</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video method-video" data-src="videos/hot3d/hot3d_01_ours.mp4"><source type="video/mp4"></video>
+                </div>
+                <div class="method-col">
+                    <div class="method-label">Ground Truth</div>
+                    <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hot3d/hot3d_01_gt.mp4"><source type="video/mp4"></video>
+                </div>
+                <div class="method-col">
+                    <div class="method-label">Comparison</div>
+                    <div class="inline-video-compare-single" data-example="hot3d-1" data-videos='{"ours":"videos/hot3d/hot3d_01_ours.mp4","interdyn":"videos/hot3d/hot3d_01_interdyn.mp4","mask2iv":"videos/hot3d/hot3d_01_mask2iv.mp4","coshand":"videos/hot3d/hot3d_01_coshand.mp4","wan-control":"videos/hot3d/hot3d_01_wan_control.mp4"}' data-labels='{"ours":"Hand2World","interdyn":"InterDyn","mask2iv":"Mask2IV","coshand":"CosHand","wan-control":"Wan2.1-Control"}'>
+                        <div class="compare-left"><video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hot3d/hot3d_01_ours.mp4"><source type="video/mp4"></video></div>
+                        <div class="compare-right"><video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hot3d/hot3d_01_gt.mp4"><source type="video/mp4"></video></div>
+                        <div class="compare-slider"><div class="compare-handle"></div></div>
+                        <div class="compare-hover-labels"><span class="hover-label hover-label-left">Hand2World</span><span class="hover-label hover-label-right">Ground Truth</span></div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sync-play-container" data-sync-control="hot3d-1" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="hot3d-1"><svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span class="play-text">Play</span></button>
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;"><div class="sync-progress-bar"><div class="sync-progress-fill"><div class="sync-progress-handle"></div></div></div><div class="sync-time-display">0:00 / 0:00</div></div>
+            </div>
+
+            <!-- HOT3D Example 2 -->
+            <h4 class="slide-title" style="margin-top: 1.25rem;">Grasping Cup and Bringing to Mouth</h4>
+
+            <div class="method-selector-single" data-example="hot3d-2">
+                <button class="method-btn-single" data-example="hot3d-2" data-method="interdyn" data-label="InterDyn">InterDyn</button>
+                <button class="method-btn-single" data-example="hot3d-2" data-method="mask2iv" data-label="Mask2IV">Mask2IV</button>
+                <button class="method-btn-single" data-example="hot3d-2" data-method="coshand" data-label="CosHand">CosHand</button>
+                <button class="method-btn-single" data-example="hot3d-2" data-method="wan-control" data-label="Wan2.1-Control">Wan2.1-Control</button>
+                <button class="method-btn-single active" data-example="hot3d-2" data-method="ours" data-label="Hand2World">Hand2World</button>
+            </div>
+            <div class="comparison-grid-dataset" id="hot3d-2-grid" data-sync-group="hot3d-2">
+                <div class="method-col"><div class="method-label">Scene Image</div><img src="images/scenes/hot3d_02_scene.jpg" alt="Scene Image" class="scene-image"></div>
+
+                <div class="method-group">
+                    <div class="method-col"><div class="method-label method-video-label">Hand2World</div><video loop muted playsinline preload="metadata" class="lazy-video sync-video method-video" data-src="videos/hot3d/hot3d_02_ours.mp4"><source type="video/mp4"></video></div>
+                <div class="method-col"><div class="method-label">Ground Truth</div><video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hot3d/hot3d_02_gt.mp4"><source type="video/mp4"></video></div>
+                <div class="method-col"><div class="method-label">Comparison</div><div class="inline-video-compare-single" data-example="hot3d-2" data-videos='{"ours":"videos/hot3d/hot3d_02_ours.mp4","interdyn":"videos/hot3d/hot3d_02_interdyn.mp4","mask2iv":"videos/hot3d/hot3d_02_mask2iv.mp4","coshand":"videos/hot3d/hot3d_02_coshand.mp4","wan-control":"videos/hot3d/hot3d_02_wan_control.mp4"}' data-labels='{"ours":"Hand2World","interdyn":"InterDyn","mask2iv":"Mask2IV","coshand":"CosHand","wan-control":"Wan2.1-Control"}'><div class="compare-left"><video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hot3d/hot3d_02_ours.mp4"><source type="video/mp4"></video></div><div class="compare-right"><video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/hot3d/hot3d_02_gt.mp4"><source type="video/mp4"></video></div><div class="compare-slider"><div class="compare-handle"></div></div><div class="compare-hover-labels"><span class="hover-label hover-label-left">Hand2World</span><span class="hover-label hover-label-right">Ground Truth</span></div></div></div></div>
+            </div>
+            <div class="sync-play-container" data-sync-control="hot3d-2" style="margin-top: 1rem;"><button class="sync-play-button" data-target="hot3d-2"><svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span class="play-text">Play</span></button><div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;"><div class="sync-progress-bar"><div class="sync-progress-fill"><div class="sync-progress-handle"></div></div></div><div class="sync-time-display">0:00 / 0:00</div></div></div>
+
+            <!-- Free-Space Gesture Comparisons -->
+            <h3 style="margin-top: 3rem; margin-bottom: 0.5rem;">Free-Space Gesture Control</h3>
+            <p class="section-desc" style="margin-bottom: 0.5rem;">Select any two methods to compare. Drag the slider on the output to reveal each method. Hover to see labels.</p>
+
+            <!-- Example 1: Bimanual Box Opening + Head Pan -->
+            <h4 class="slide-title" style="margin-top: 1rem;">Bimanual Box Opening</h4>
+
+            <div class="method-selector-dual" data-example="1">
+                <button class="method-btn-dual active" data-example="1" data-method="interdyn" data-label="InterDyn">InterDyn</button>
+                <button class="method-btn-dual" data-example="1" data-method="mask2iv" data-label="Mask2IV">Mask2IV</button>
+                <button class="method-btn-dual" data-example="1" data-method="coshand" data-label="CosHand">CosHand</button>
+                <button class="method-btn-dual" data-example="1" data-method="wan-control" data-label="Wan2.1-Control">Wan2.1-Control</button>
+                <button class="method-btn-dual active" data-example="1" data-method="ours" data-label="Hand2World">Hand2World</button>
+            </div>
+
+            <div class="comparison-grid compact" id="example-1-grid" data-sync-group="comparison-1">
+                <div class="method-group">
+                    <div class="method-col">
+                        <div class="method-label">Scene Image</div>
+                        <img src="images/scenes/freespace_01_scene.png"
+                             alt="Scene Image"
+                             class="scene-image">
+                    </div>
+
+                    <div class="method-col">
+                        <div class="method-label">Input Gesture</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/freespace/freespace_01_input.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                        <div class="method-label">Hand Control</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/freespace/freespace_01_control_no_bg.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+
+                    <div class="method-col">
+                        <div class="method-label">Comparison</div>
+                        <div class="inline-video-compare" data-example="1"
+                             data-videos='{"ours":"videos/freespace/freespace_01_ours.mp4","interdyn":"videos/freespace/freespace_01_interdyn.mp4","mask2iv":"videos/freespace/freespace_01_mask2iv.mp4","coshand":"videos/freespace/freespace_01_coshand.mp4","wan-control":"videos/freespace/freespace_01_wan_control.mp4"}'
+                             data-labels='{"ours":"Hand2World","interdyn":"InterDyn","mask2iv":"Mask2IV","coshand":"CosHand","wan-control":"Wan2.1-Control","playerone":"PlayerOne"}'>
+                            <div class="compare-left">
+                                <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/freespace/freespace_01_ours.mp4">
+                                    <source type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="compare-right">
+                                <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/freespace/freespace_01_interdyn.mp4">
+                                    <source type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="compare-slider">
+                                <div class="compare-handle"></div>
+                            </div>
+                            <div class="compare-hover-labels">
+                                <span class="hover-label hover-label-left">Hand2World</span>
+                                <span class="hover-label hover-label-right">InterDyn</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Play Button for Comparison Example 1 -->
+            <div class="sync-play-container" data-sync-control="comparison-1" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="comparison-1">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span class="play-text">Pause</span>
+                </button>
+
+                <!-- Progress Bar for Comparison Example 1 -->
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;">
+                    <div class="sync-progress-bar">
+                        <div class="sync-progress-fill">
+                            <div class="sync-progress-handle"></div>
+                        </div>
+                    </div>
+                    <div class="sync-time-display">0:00 / 0:00</div>
+                </div>
+            </div>
+
+            <!-- Example 2: Unimanual Box Opening + Head Shake -->
+            <h4 class="slide-title" style="margin-top: 2rem;">Unimanual Box Opening</h4>
+
+            <div class="method-selector-dual" data-example="2">
+                <button class="method-btn-dual active" data-example="2" data-method="interdyn" data-label="InterDyn">InterDyn</button>
+                <button class="method-btn-dual" data-example="2" data-method="mask2iv" data-label="Mask2IV">Mask2IV</button>
+                <button class="method-btn-dual" data-example="2" data-method="coshand" data-label="CosHand">CosHand</button>
+                <button class="method-btn-dual" data-example="2" data-method="wan-control" data-label="Wan2.1-Control">Wan2.1-Control</button>
+                <button class="method-btn-dual active" data-example="2" data-method="ours" data-label="Hand2World">Hand2World</button>
+            </div>
+
+            <div class="comparison-grid compact" id="example-2-grid" data-sync-group="comparison-2">
+                <div class="method-group">
+                    <div class="method-col">
+                        <div class="method-label">Scene Image</div>
+                        <img src="images/scenes/freespace_02_scene.png"
+                             alt="Scene Image"
+                             class="scene-image">
+                    </div>
+
+                    <div class="method-col">
+                        <div class="method-label">Input Gesture</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/freespace/freespace_02_input.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <div class="method-group">
+                    <div class="method-col">
+                        <div class="method-label">Hand Control</div>
+                        <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/freespace/freespace_02_control_no_bg.mp4">
+                            <source type="video/mp4">
+                        </video>
+                    </div>
+
+                    <div class="method-col">
+                        <div class="method-label">Comparison</div>
+                        <div class="inline-video-compare" data-example="2"
+                             data-videos='{"ours":"videos/freespace/freespace_02_ours.mp4","interdyn":"videos/freespace/freespace_02_interdyn.mp4","mask2iv":"videos/freespace/freespace_02_mask2iv.mp4","coshand":"videos/freespace/freespace_02_coshand.mp4","wan-control":"videos/freespace/freespace_02_wan_control.mp4"}'
+                             data-labels='{"ours":"Hand2World","interdyn":"InterDyn","mask2iv":"Mask2IV","coshand":"CosHand","wan-control":"Wan2.1-Control","playerone":"PlayerOne"}'>
+                            <div class="compare-left">
+                                <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/freespace/freespace_02_ours.mp4">
+                                    <source type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="compare-right">
+                                <video loop muted playsinline preload="metadata" class="lazy-video sync-video" data-src="videos/freespace/freespace_02_interdyn.mp4">
+                                    <source type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="compare-slider">
+                                <div class="compare-handle"></div>
+                            </div>
+                            <div class="compare-hover-labels">
+                                <span class="hover-label hover-label-left">Hand2World</span>
+                                <span class="hover-label hover-label-right">InterDyn</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Play Button for Comparison Example 2 -->
+            <div class="sync-play-container" data-sync-control="comparison-2" style="margin-top: 1rem;">
+                <button class="sync-play-button" data-target="comparison-2">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span class="play-text">Pause</span>
+                </button>
+
+                <!-- Progress Bar for Comparison Example 2 -->
+                <div class="sync-progress-bar-container" style="width: auto; flex: 1; max-width: 600px;">
+                    <div class="sync-progress-bar">
+                        <div class="sync-progress-fill">
+                            <div class="sync-progress-handle"></div>
+                        </div>
+                    </div>
+                    <div class="sync-time-display">0:00 / 0:00</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BibTeX -->
+    <section id="citation" class="bg-alt">
+        <div class="container">
+            <h2>BibTeX</h2>
+
+            <pre style="background-color: #f5f5f5; padding: 1.5rem; border-radius: 8px; overflow-x: auto;"><code style="color: #333; font-family: 'Courier New', monospace; font-size: 0.9rem;">@misc{wang2026hand2worldautoregressiveegocentricinteraction,
+      title={Hand2World: Autoregressive Egocentric Interaction Generation via Free-Space Hand Gestures},
+      author={Yuxi Wang and Wenqi Ouyang and Tianyi Wei and Yi Dong and Zhiqi Shen and Xingang Pan},
+      year={2026},
+      eprint={2602.09600},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2602.09600},
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/video-compare.js"></script>
+</body>
+</html>
